@@ -1,24 +1,16 @@
-# Hallen-Inventur (Netlify)
+# Heimspieltag-Checkliste (Netlify)
 
-Bestand, Nachkaufen, Ausleihe, Defekte und Nutzerverwaltung. Alle Geräte sehen denselben Stand (Aktualisierung alle 5 s).
-Die Daten liegen in **Netlify Blobs**.
-
-## Zwei Codes (Netlify → Site configuration → Environment variables)
-| Variable | Wofür |
-|---|---|
-| `MASTER_PIN` | Nur für dich. Wer sich damit anmeldet, ist sofort **Master**: sieht den Reiter „Nutzer“ und schaltet andere frei. |
-| `HALLE_PIN` | Freischaltcode für alle anderen (Tablet, Kollege, Präsi). Danach wartet die Anmeldung, bis der Master sie freischaltet. |
-
-Nach dem Setzen oder Ändern: Deploys → Trigger deploy.
-
-## Rollen
-- **Master**: alles, plus Nutzer freischalten, sperren und Rollen ändern
-- **Bearbeiten**: Bestand ändern (z. B. Hallen-Tablet, Kollege)
-- **Nur ansehen**: sieht alles, ändert nichts (z. B. Präsi)
+Aufbau und Abbau zum Abhaken, ohne Namen. Alle Geräte sehen live denselben Stand.
+Über „Neues Heimspiel“ setzt du die Liste zurück.
 
 ## Online stellen
-GitHub-Repo → Netlify „Import from Git“ (siehe frühere Anleitung). Updates: Dateien im Repo ersetzen, dann deployt Netlify automatisch.
+Genau wie bei der Inventur, aber als **eigenes** GitHub-Repo und **eigene** Netlify-Site:
+1. Neues GitHub-Repo anlegen, z. B. `heimspieltag`, und den Inhalt dieses Ordners hochladen.
+2. Netlify → Import from Git → Repo wählen → Deploy.
+3. Unter Environment variables `HALLE_PIN` setzen (darf dieselbe PIN sein wie bei der Inventur) → neu deployen.
+4. Visitor access auf „No protection“ lassen.
 
-## Auf dem Tablet als App
-- **iPad:** Safari → Teilen → „Zum Home-Bildschirm“
-- **Android:** Chrome → ⋮ → „App installieren“
+## Liste ändern
+In `public/index.html` ganz oben im Block `SECTIONS` stehen alle Punkte.
+Text ändern, Punkt dazu oder weg, dann bei GitHub hochladen. Netlify deployt automatisch.
+Jeder Punkt braucht eine eindeutige `id`.

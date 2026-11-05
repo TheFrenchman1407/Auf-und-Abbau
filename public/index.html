@@ -3,167 +3,320 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Hallen-Inventur</title>
+<title>Heimspieltag Checkliste</title>
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="icon" href="/icon-192.png">
 <link rel="apple-touch-icon" href="/icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Inventur">
+<meta name="apple-mobile-web-app-title" content="Heimspieltag">
 <meta name="theme-color" content="#0f1311">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root{--bg:#0f1311;--card:#1a1f1d;--ink:#eef1ee;--muted:#93a09a;--line:#2a3230;--accent:#3fbf96;--accent-ink:#0b1712;--accent-soft:#1c3129;
-    --warn:#f2a65a;--warn-soft:#33261a;--bad:#ef7b72;--bad-soft:#3a1f1d;--r:14px;color-scheme:dark}
+  :root{--bg:#0f1311;--card:#1a1f1d;--ink:#eef1ee;--muted:#93a09a;--line:#2a3230;--accent:#3fbf96;--accent-ink:#0b1712;--accent-soft:#1c3129;--warn:#f2a65a;--warn-soft:#33261a;--bad:#ef7b72;--r:14px;color-scheme:dark}
   *{box-sizing:border-box}
-  body{margin:0;font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:16px;-webkit-tap-highlight-color:transparent}
-  header{position:sticky;top:0;z-index:5;background:var(--bg);padding:16px 20px 0;border-bottom:1px solid var(--line)}
+  body{margin:0;font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:17px;-webkit-tap-highlight-color:transparent}
+  header{position:sticky;top:0;z-index:5;background:var(--bg);padding:16px 20px 10px;border-bottom:1px solid var(--line)}
   .top{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
   h1{font-size:22px;margin:0;font-weight:700}
   .status{font-size:13px;color:var(--muted);margin-left:auto}
   .status.bad{color:var(--bad)}
-  nav{display:flex;gap:4px;margin-top:12px;overflow-x:auto}
-  nav button{border:0;background:none;color:var(--muted);font:inherit;font-weight:600;padding:12px 14px;border-bottom:3px solid transparent;cursor:pointer;white-space:nowrap}
-  nav button.on{color:var(--ink);border-color:var(--accent)}
-  .badge{display:inline-block;min-width:22px;padding:1px 7px;border-radius:99px;font-size:12px;margin-left:6px;background:var(--line);color:var(--ink);text-align:center}
-  .badge.warn{background:var(--warn);color:#1a1206}.badge.bad{background:var(--bad);color:#1a0b0a}
-  main{padding:18px 20px 100px;max-width:1100px;margin:0 auto}
-  .toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
-  input,select,textarea{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:11px 12px;min-height:46px}
-  textarea{min-height:80px;width:100%}
-  .search{flex:1;min-width:200px}
-  .btn{font:inherit;font-weight:600;border:0;border-radius:10px;padding:0 18px;min-height:46px;cursor:pointer;background:var(--accent);color:var(--accent-ink)}
+  .sub{font-size:14px;color:var(--muted);margin-top:4px}
+  .bar{height:10px;background:var(--line);border-radius:99px;overflow:hidden;margin-top:10px}
+  .bar i{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .3s}
+  nav,.chips{display:flex;gap:6px;margin-top:10px;overflow-x:auto;scrollbar-width:none}
+  nav button,.chips button{font:inherit;font-size:15px;font-weight:600;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:99px;padding:9px 14px;white-space:nowrap;cursor:pointer}
+  nav button.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+  nav button .n{opacity:.75;font-weight:500;margin-left:4px}
+  .chips button{font-size:13px;padding:7px 12px;display:flex;align-items:center;gap:7px}
+  .chips button.on{border-color:var(--ink);background:var(--line)}
+  .dot{width:12px;height:12px;border-radius:50%;flex:none;display:inline-block}
+  main{padding:14px 20px 120px;max-width:820px;margin:0 auto}
+  h2{font-size:15px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:26px 0 10px;display:flex;align-items:center;gap:10px}
+  h2 .cnt{margin-left:auto;font-size:13px;letter-spacing:0;text-transform:none}
+  h2 .cnt.done{color:var(--accent);font-weight:700}
+  .loc{display:flex;align-items:center;gap:10px;margin:18px 0 8px;padding:10px 14px;border-radius:12px;background:var(--card);border:1px solid var(--line);border-left:6px solid var(--c)}
+  .loc .ln{font-weight:700}
+  .loc .lw{font-size:13px;color:var(--muted)}
+  .loc .lc{margin-left:auto;font-size:13px;color:var(--muted);white-space:nowrap}
+  .loc .lc.done{color:var(--accent);font-weight:700}
+  .task{display:flex;gap:14px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-left:6px solid var(--c,var(--line));border-radius:var(--r);padding:16px;margin-bottom:8px;cursor:pointer;user-select:none;transition:opacity .2s,background .15s}
+  .task:active{background:var(--accent-soft)}
+  .box{flex:none;width:34px;height:34px;border-radius:9px;border:2.5px solid var(--muted);display:grid;place-items:center;margin-top:-2px}
+  .box svg{width:22px;height:22px;opacity:0}
+  .txt{flex:1}
+  .t{font-weight:600;line-height:1.35}
+  .hint{font-size:14px;color:var(--muted);margin-top:5px;line-height:1.4}
+  .when{font-size:12px;color:var(--muted);margin-top:4px;font-weight:600}
+  .tag{display:inline-block;font-size:12px;font-weight:600;background:var(--warn-soft);color:var(--warn);padding:2px 8px;border-radius:99px;margin-top:6px}
+  /* erledigt: ausgegraut, kompakt, ans Ende der Gruppe */
+  .task.done{opacity:.38;padding:10px 16px;border-left-color:var(--line);background:transparent}
+  .task.done .box{background:var(--muted);border-color:var(--muted);width:28px;height:28px}
+  .task.done .box svg{opacity:1}
+  .task.done .t{text-decoration:line-through;font-weight:500}
+  .task.done .hint,.task.done .tag{display:none}
+  .info{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--warn);border-radius:var(--r);padding:14px 16px;margin-bottom:8px;font-weight:500;line-height:1.4}
+  .footer{margin-top:28px;display:flex;flex-direction:column;gap:10px}
+  .note{background:var(--warn-soft);color:var(--ink);border-radius:var(--r);padding:14px 16px;font-size:14px;line-height:1.45}
+  .note b{color:var(--warn)}
+  .btn{font:inherit;font-weight:600;border:0;border-radius:12px;padding:0 20px;min-height:52px;cursor:pointer;background:var(--accent);color:var(--accent-ink)}
   .btn.ghost{background:var(--card);color:var(--ink);border:1px solid var(--line)}
-  .btn.danger{background:var(--bad);color:#1a0b0a}
-  .btn.small{min-height:38px;padding:0 12px;font-size:14px}
-  .cat{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:22px 0 8px}
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:10px}
-  .item{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px;display:flex;flex-direction:column;gap:10px}
-  .item.low{border-color:var(--warn);box-shadow:inset 4px 0 0 var(--warn)}
-  .item.empty0{border-color:var(--bad);box-shadow:inset 4px 0 0 var(--bad)}
-  .row{display:flex;align-items:center;gap:10px}
-  .name{font-weight:600;font-size:17px;flex:1}
-  .meta{font-size:13px;color:var(--muted)}
-  .pill{font-size:12px;font-weight:600;padding:3px 8px;border-radius:99px}
-  .pill.warn{background:var(--warn-soft);color:var(--warn)}
-  .pill.bad{background:var(--bad-soft);color:var(--bad)}
-  .pill.info{background:var(--accent-soft);color:var(--accent)}
-  .counters{display:flex;gap:18px;flex-wrap:wrap;align-items:flex-end}
-  .counter .lbl{font-size:12px;font-weight:600;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em}
-  .qty{display:flex;align-items:center;gap:8px}
-  .qbtn{width:48px;height:48px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-size:24px;font-weight:600;cursor:pointer;line-height:1}
-  .qbtn:active{background:var(--accent-soft)}
-  .qnum{font-size:26px;font-weight:700;min-width:40px;text-align:center;font-variant-numeric:tabular-nums}
-  .actions{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
-  .list{display:flex;flex-direction:column;gap:8px}
-  .line{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-  .line.warn{border-left:5px solid var(--warn)} .line.bad{border-left:5px solid var(--bad)}
-  .line .grow{flex:1;min-width:180px}
-  .empty{color:var(--muted);text-align:center;padding:40px 10px;background:var(--card);border:1px dashed var(--line);border-radius:var(--r)}
-  .alert{background:var(--warn-soft);color:var(--warn);border-radius:var(--r);padding:14px 16px;margin-bottom:14px;font-weight:600;cursor:pointer;display:flex;gap:10px;align-items:center}
-  .alert.bad{background:var(--bad-soft);color:var(--bad)}
-  dialog{border:0;border-radius:18px;padding:0;width:min(520px,94vw);background:var(--card);color:var(--ink)}
+  .btn.danger{background:var(--bad);color:#fff}
+  .reset{width:100%;margin-top:18px}
+  .done-all{text-align:center;padding:20px;background:var(--accent-soft);color:var(--accent);border-radius:var(--r);font-weight:700;margin-top:10px}
+  .plan{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:10px}
+  .plan svg{width:100%;height:auto;display:block}
+  .legend{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px;margin-top:12px}
+  .legend > div{display:flex;gap:10px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:14px;line-height:1.35}
+  .legend .dot{margin-top:3px}
+  dialog{border:0;border-radius:18px;padding:0;width:min(460px,94vw);background:var(--card);color:var(--ink)}
   dialog::backdrop{background:rgba(0,0,0,.6)}
-  .dlg{padding:20px;display:flex;flex-direction:column;gap:12px}
-  .dlg h2{margin:0 0 4px;font-size:19px}
-  .dlg label{display:flex;flex-direction:column;gap:5px;font-size:13px;font-weight:600;color:var(--muted)}
-  .dlg label.chk{flex-direction:row;align-items:center;gap:10px;color:var(--ink);font-size:15px;font-weight:500}
-  .dlg label.chk input{min-height:auto;width:22px;height:22px}
-  .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  .foot{display:flex;gap:8px;justify-content:flex-end;margin-top:6px;flex-wrap:wrap}
-  .foot .left{margin-right:auto}
-  .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:10px;font-weight:500;opacity:0;transition:.2s;pointer-events:none;z-index:50}
+  .dlg{padding:22px;display:flex;flex-direction:column;gap:12px}
+  .dlg h3{margin:0;font-size:19px}
+  .dlg input{font:inherit;font-size:20px;letter-spacing:.2em;text-align:center;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px;min-height:52px}
+  .foot{display:flex;gap:8px;justify-content:flex-end}
+  .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:10px;font-weight:500;opacity:0;transition:.2s;pointer-events:none}
   .toast.show{opacity:1}
-  .ro .edit-only{display:none!important}
-  #gate{position:fixed;inset:0;background:var(--bg);z-index:20;display:none;align-items:center;justify-content:center;padding:20px}
-  #gate.show{display:flex}
-  .gatebox{width:min(420px,100%);background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px;display:flex;flex-direction:column;gap:14px}
-  .gatebox h2{margin:0;font-size:22px}
-  .gatebox input{width:100%;font-size:18px}
-  .spinner{width:34px;height:34px;border:4px solid var(--line);border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite;margin:6px auto}
-  @keyframes spin{to{transform:rotate(360deg)}}
-  .role{font-size:12px;font-weight:700;padding:3px 9px;border-radius:99px;background:var(--line)}
-  .role.master{background:var(--accent);color:var(--accent-ink)}
 </style>
 </head>
 <body>
-<div id="gate"></div>
-
 <header>
   <div class="top">
-    <h1>🏐 Hallen-Inventur</h1>
+    <h1>🏐 Heimspieltag</h1>
     <span class="status" id="status">Verbinde…</span>
-    <button class="btn ghost small" id="meBtn">👤</button>
   </div>
-  <nav id="tabs">
-    <button data-tab="bestand" class="on">Bestand</button>
-    <button data-tab="nachkauf">Nachkaufen <span class="badge" id="b-low">0</span></button>
-    <button data-tab="ausleihe">Ausleihe <span class="badge" id="b-loan">0</span></button>
-    <button data-tab="defekte">Defekte <span class="badge" id="b-def">0</span></button>
-    <button data-tab="nutzer" id="tabNutzer" style="display:none">Nutzer <span class="badge" id="b-usr">0</span></button>
-  </nav>
+  <div class="sub" id="sub"></div>
+  <div class="bar"><i id="bar" style="width:0"></i></div>
+  <nav id="nav"></nav>
+  <div class="chips" id="chips"></div>
 </header>
 <main id="main"></main>
 
-<dialog id="dItem"><form class="dlg" id="fItem">
-  <h2 id="dItemTitle">Artikel</h2>
-  <label>Name<input name="name" required placeholder="z. B. Kiste Wasser"></label>
-  <div class="two">
-    <label>Kategorie<input name="category" list="cats" placeholder="z. B. Getränke"></label>
-    <label>Ort / Schrank<input name="location" list="locs" placeholder="z. B. Getränke-Raum"></label>
-  </div>
-  <label class="chk"><input type="checkbox" name="halves"> Angebrochene zählen (z. B. halbe Kisten)</label>
-  <div class="two">
-    <label>Bestand (voll)<input name="qty" type="number" min="0" inputmode="numeric" value="0"></label>
-    <label id="openedWrap">Davon angebrochen<input name="opened" type="number" min="0" inputmode="numeric" value="0"></label>
-  </div>
-  <label>Mindestmenge – ab hier „Nachkaufen“<input name="minQty" type="number" min="0" inputmode="numeric" value="0"></label>
-  <div class="meta" style="margin-top:-6px">Beispiel: Mindestmenge 2 → bei 2 oder weniger erscheint der Artikel unter „Nachkaufen“. 0 = keine Warnung.</div>
-  <label>Notiz<input name="note" placeholder="optional"></label>
-  <div class="foot">
-    <button type="button" class="btn danger small left" id="delItem">Löschen</button>
-    <button type="button" class="btn ghost" data-close>Abbrechen</button>
-    <button class="btn">Speichern</button>
-  </div>
+<dialog id="dPin"><form class="dlg" id="fPin">
+  <h3>Hallen-PIN</h3>
+  <input name="pin" type="password" inputmode="numeric" autocomplete="off" required>
+  <div class="foot"><button class="btn">Weiter</button></div>
 </form></dialog>
 
-<dialog id="dLoan"><form class="dlg" id="fLoan">
-  <h2>Ausleihen</h2>
-  <label>Artikel<select name="itemId" required id="loanItem"></select></label>
-  <div class="two">
-    <label>Anzahl<input name="qty" type="number" min="1" value="1" inputmode="numeric"></label>
-    <label>Wer?<input name="borrower" required placeholder="Name / Mannschaft"></label>
-  </div>
-  <label>Notiz<input name="note" placeholder="z. B. Auswärtsspiel Samstag"></label>
-  <div class="foot"><button type="button" class="btn ghost" data-close>Abbrechen</button><button class="btn">Ausleihe eintragen</button></div>
-</form></dialog>
-
-<dialog id="dRep"><form class="dlg" id="fRep">
-  <h2>Defekt / Zustand melden</h2>
-  <label>Artikel<select name="itemId" required id="repItem"></select></label>
-  <label>Was ist los?<textarea name="text" required placeholder="z. B. Kühlschrank kühlt nicht mehr"></textarea></label>
-  <label>Betroffene Anzahl<input name="qty" type="number" min="1" value="1" inputmode="numeric"></label>
-  <label class="chk"><input type="checkbox" name="deduct"> Aus dem Bestand abziehen (nicht mehr nutzbar)</label>
-  <div class="foot"><button type="button" class="btn ghost" data-close>Abbrechen</button><button class="btn">Melden</button></div>
-</form></dialog>
-
-<dialog id="dAsk"><div class="dlg">
-  <h2 id="askTitle">Sicher?</h2>
-  <div id="askText" class="meta"></div>
-  <div class="foot"><button class="btn ghost" id="askNo">Abbrechen</button><button class="btn danger" id="askYes">Ja</button></div>
+<dialog id="dReset"><div class="dlg">
+  <h3>Neues Heimspiel starten?</h3>
+  <div style="color:var(--muted)">Alle Häkchen werden für alle Geräte zurückgesetzt.</div>
+  <div class="foot"><button class="btn ghost" id="rNo">Abbrechen</button><button class="btn danger" id="rYes">Zurücksetzen</button></div>
 </div></dialog>
-
-<dialog id="dMe"><div class="dlg">
-  <h2 id="meName"></h2>
-  <div id="meRole" class="meta"></div>
-  <div class="foot">
-    <button class="btn danger small left" id="logout">Dieses Gerät abmelden</button>
-    <button class="btn ghost" data-close>Schließen</button>
-  </div>
-</div></dialog>
-
-<datalist id="cats"></datalist><datalist id="locs"></datalist>
 <div class="toast" id="toast"></div>
-<script src="/app.js"></script>
+
+<script>
+// ===================== ORTE & FARBEN – hier anpassen =====================
+const LOCS = {
+  ga5:      { name:"Trainingsschrank (GA5)", color:"#f07fb3", where:"Hallengarage 5, rechts neben dem Technikraum" },
+  technik:  { name:"Technikraum / Regie",    color:"#5aa9f0", where:"In der Halle, zwischen GA4 und GA5" },
+  ga4:      { name:"Spielschrank (GA4)",     color:"#b48cf2", where:"Hallengarage 4, links neben dem Technikraum" },
+  ga3:      { name:"Hallengarage 3",         color:"#f2994a", where:"Zweite Garage links vom Technikraum" },
+  l1:       { name:"Lehrerkabine L1",        color:"#ef6b6b", where:"Erste Lehrerkabine – Hallenschlüssel nötig" },
+  getraenke:{ name:"Getränkeraum",           color:"#f5c84b", where:"Hinten rechts in der Halle" },
+  container:{ name:"Container (draußen)",    color:"#a8b0ac", where:"Außerhalb der Halle, neben dem Thekenbereich" },
+  halle:    { name:"Halle & Theke (vor Ort)",color:"#3fbf96", where:"Nichts zu holen – direkt in der Halle / an der Theke" },
+};
+
+// ===================== DIE LISTE – hier anpassen =====================
+// Reihenfolge der Gruppen = Reihenfolge der Orte, wie sie hier in den Aufgaben zuerst vorkommen.
+const SECTIONS = [
+  { id:"vor", title:"Vor dem Spieltag", tasks:[
+    { id:"essen", t:"2× Kuchen, 2× Salat organisieren",
+      hint:"Kann nach Wunsch angepasst werden (z. B. Backwaren) – bitte mit Alex absprechen.",
+      tag:"Reiner Abendspieltag (nur Spiele ab 18 Uhr, keine weiteren Seniorenspiele): keine Kuchen, stattdessen Herzhaftes – z. B. Würstchen, Frikadellen + vegetarische Alternative (Falafel, veg. Würstchen)." },
+  ]},
+  { id:"aufbau", title:"Aufbau", grouped:true, tasks:[
+    { id:"a-schluessel", loc:"ga5", t:"Gelben Hauptschlüssel holen", hint:"Aus dem Trainingsschrank. Alternativ einen anderen Hallenschlüssel (Loddes oder Alex haben einen). Wird für Tribünen und L1 gebraucht." },
+    { id:"a-tribuenen", loc:"ga5", t:"Tribünen herunterfahren", hint:"Mit dem gelben Hauptschlüssel" },
+    { id:"a-zeittisch", loc:"technik", t:"Zeitnehmertisch aufbauen", hint:"Weißer Tisch auf Rollen (NEUER Tisch!)" },
+    { id:"a-steuergeraet", loc:"technik", t:"Steuergerät für die Uhr an den Zeitnehmertisch" },
+    { id:"a-zeitmaterial", loc:"ga4", t:"Laptop, Time-Out-Karten, Zeitstrafenzettel, Stift an den Zeitnehmertisch" },
+    { id:"a-pylonen", loc:"ga3", t:"Pylonen auf dem Parkplatz aufstellen", hint:"Grünflächen und Rettungswege absperren – während des Spieltags darauf achten!" },
+    { id:"a-kasse", loc:"l1", t:"Tisch für die Eintritts-Kasse aufstellen", hint:"Steht in L1 – zum Aufschließen Hallenschlüssel nötig" },
+    { id:"a-kuehlschrank", loc:"getraenke", t:"Kleinen Kühlschrank zur Theke bringen" },
+    { id:"a-kisten", loc:"getraenke", t:"Verkaufs-Kisten nach vorne holen", hint:"Verschiebbarer Turm auf dem Rollbrett" },
+    { id:"a-kaffee", loc:"getraenke", t:"Kaffeemaschine aufbauen und einschalten", hint:"Im Turm mit den Vorratskisten", tag:"Nur bei Spielen vor 16 Uhr" },
+    { id:"a-klopapier", loc:"getraenke", t:"Toilettenpapier und Seife in den Toiletten verteilen" },
+    { id:"a-theke", loc:"container", t:"Theke aufbauen", hint:"2× lang, 1× kurz" },
+    { id:"a-baenke", loc:"halle", t:"Auswechselbänke aufstellen", hint:"2 pro Mannschaft" },
+  ]},
+  { id:"waehrend", title:"Während des Spieltags", info:[
+    "Es muss immer mindestens eine Person an der Theke stehen!",
+    "Bei 1. Herren und 1. Damen: Eintritt kassieren (separat vom Verkauf, direkt in der Halle).",
+    "Schiedsrichter und Zeitnehmer erhalten jeweils ein Gratisgetränk!",
+  ], tasks:[] },
+  { id:"abbau", title:"Abbau", grouped:true, tasks:[
+    { id:"b-kaffee", loc:"halle", t:"Kaffeemaschine reinigen", hint:"Kaffeefilter entsorgen" },
+    { id:"b-utensilien", loc:"halle", t:"Utensilien zurück in die Verkaufskisten räumen", hint:"Beschriftung beachten" },
+    { id:"b-spuelen", loc:"halle", t:"Geschirr, Tassen und Kaffeekannen spülen", hint:"Evtl. auch Becher" },
+    { id:"b-halle", loc:"halle", t:"Halle aufräumen und Bänke wegräumen", hint:"Kontrollieren, ob noch leere Flaschen hinter/unter der Tribüne liegen" },
+    { id:"b-theke", loc:"container", t:"Theke abwischen und zurück in den Container" },
+    { id:"b-muell", loc:"container", t:"Müll in die Müllcontainer an der Halle" },
+    { id:"b-zeittisch", loc:"technik", t:"Zeitnehmertisch und Steuergerät zurück in den Technikraum" },
+    { id:"b-zeitmaterial", loc:"ga4", t:"Laptop, Time-Out-Karten, Zeitstrafenzettel, Stift zurück in den Spielschrank" },
+    { id:"b-pylonen", loc:"ga3", t:"Pylonen einsammeln und zurück in GA3" },
+    { id:"b-kasse", loc:"l1", t:"Tisch für die Eintritts-Kasse zurück in L1", hint:"L1 wieder abschließen" },
+    { id:"b-kisten", loc:"getraenke", t:"Verkaufs-Kisten und kleinen Kühlschrank zurück", tag:"Kühlschrank an Strom anschließen!" },
+    { id:"b-kaffee-weg", loc:"getraenke", t:"Kaffeemaschine zurück in den Turm mit den Vorratskisten" },
+    { id:"b-grosser-kuehlschrank", loc:"getraenke", t:"Großen Kühlschrank auffüllen", hint:"Nur volle Kisten – Pfand sortieren!" },
+    { id:"b-getraenkeraum", loc:"getraenke", t:"Getränkeraum ordentlich hinterlassen und abschließen" },
+    { id:"b-tribuenen", loc:"ga5", t:"Tribünen hochfahren", hint:"Mit dem gelben Hauptschlüssel" },
+    { id:"b-abschliessen", loc:"ga5", t:"Abschließen: Container und Schränke (Jugend, Senioren, Spiel)" },
+    { id:"b-schluessel", loc:"ga5", t:"Gelben Hauptschlüssel zurück in den Trainingsschrank" },
+  ]},
+];
+// =====================================================================
+
+(() => {
+  const $ = s => document.querySelector(s);
+  const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const ls = { get(k){ try{ return localStorage.getItem(k)||""; }catch(e){ return ""; } }, set(k,v){ try{ localStorage.setItem(k,v); }catch(e){} } };
+  const ALL = SECTIONS.flatMap(s => s.tasks);
+  let PIN = ls.get("hs-pin");
+  let tab = ls.get("hs-tab") || "aufbau";
+  let locFilter = ls.get("hs-loc") || "";
+  let checked = {}, startedAt = null, loaded = false;
+  const inflight = {};
+
+  const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="#0f1311" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+  const fmtT = ts => typeof ts==="number" ? new Date(ts).toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit"}) : "";
+  const fmtD = ts => new Date(ts).toLocaleDateString("de-DE",{weekday:"short",day:"2-digit",month:"2-digit"});
+  function toast(m){ const t=$("#toast"); t.textContent=m; t.classList.add("show"); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove("show"),2200); }
+  function setStatus(m,bad){ const s=$("#status"); s.textContent=m; s.classList.toggle("bad",!!bad); }
+
+  const isDone = id => (id in inflight) ? inflight[id] : !!checked[id];
+  const count = tasks => tasks.filter(t=>isDone(t.id)).length;
+
+  async function api(path, body){
+    let r;
+    try { r = await fetch("/api"+path,{method:body?"POST":"GET",headers:{"content-type":"application/json","x-pin":PIN},body:body?JSON.stringify(body):undefined,cache:"no-store"}); }
+    catch(e){ throw {code:"offline"}; }
+    if (r.status===401){ askPin(); throw {code:"pin"}; }
+    if (!r.ok) throw {code:"http"};
+    return r.json();
+  }
+  let busy=false;
+  async function refresh(){
+    if (busy) return; busy=true;
+    try { const s=await api("/state"); checked=s.checked||{}; startedAt=s.startedAt; loaded=true;
+      setStatus("● Live – "+new Date().toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit",second:"2-digit"})); render(); }
+    catch(e){ if(e.code!=="pin") setStatus("Keine Verbindung – versuche erneut…",true); }
+    busy=false;
+  }
+  async function toggle(id){
+    const want=!isDone(id);
+    inflight[id]=want; render();
+    try { await api("/toggle",{id,done:want}); if(want) checked[id]=Date.now(); else delete checked[id]; }
+    catch(e){ if(e.code!=="pin") toast("Nicht gespeichert – keine Verbindung"); }
+    if (inflight[id]===want) delete inflight[id];
+    render();
+  }
+
+  function taskHtml(t){
+    const d=isDone(t.id), c=t.loc&&LOCS[t.loc]?LOCS[t.loc].color:"";
+    return `<div class="task ${d?"done":""}" data-id="${esc(t.id)}" role="checkbox" aria-checked="${d}" ${c?`style="--c:${c}"`:""}>
+      <div class="box">${CHECK}</div>
+      <div class="txt"><div class="t">${esc(t.t)}</div>
+        ${t.hint?`<div class="hint">${esc(t.hint)}</div>`:""}
+        ${t.tag?`<div class="tag">${esc(t.tag)}</div>`:""}
+        ${d && fmtT(checked[t.id])?`<div class="when">✓ ${fmtT(checked[t.id])}</div>`:""}
+      </div></div>`;
+  }
+  // offene zuerst, erledigte ans Ende (Reihenfolge sonst wie in der Liste)
+  const sortDone = ts => [...ts.filter(t=>!isDone(t.id)), ...ts.filter(t=>isDone(t.id))];
+
+  function groupedHtml(s){
+    const order=[...new Set(s.tasks.map(t=>t.loc))].filter(l=>!locFilter || l===locFilter);
+    if (!order.length) return `<div class="info" style="border-left-color:var(--line)">Für diesen Ort gibt es hier nichts.</div>`;
+    return order.map(l=>{
+      const L=LOCS[l]||{name:l,color:"#888",where:""};
+      const ts=s.tasks.filter(t=>t.loc===l), c=count(ts);
+      return `<div class="loc" style="--c:${L.color}"><span class="dot" style="background:${L.color}"></span>
+        <div><div class="ln">${esc(L.name)}</div><div class="lw">${esc(L.where)}</div></div>
+        <span class="lc ${c===ts.length?"done":""}">${c===ts.length?"✓ fertig":c+" / "+ts.length}</span></div>`
+        + sortDone(ts).map(taskHtml).join("");
+    }).join("");
+  }
+
+  function planSvg(){
+    const hl = id => LOCS[id].color;
+    const box=(x,y,w,h,id,label,rot)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="4" fill="${hl(id)}" fill-opacity=".9"/>
+      <text x="${x+w/2}" y="${y+h/2}" ${rot?`transform="rotate(-90 ${x+w/2} ${y+h/2})"`:""} text-anchor="middle" dominant-baseline="central" font-size="${rot?11:(w<70?11:13)}" font-weight="700" fill="#0f1311">${label}</text>`;
+    const plain=(x,y,w,h,label)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="4" fill="none" stroke="#5c6863"/>
+      <text x="${x+w/2}" y="${y+h/2}" text-anchor="middle" dominant-baseline="central" font-size="13" fill="#93a09a">${label}</text>`;
+    return `<svg viewBox="60 95 730 375" xmlns="http://www.w3.org/2000/svg" font-family="Inter,system-ui,sans-serif">
+      <rect x="246" y="114" width="527" height="338" fill="none" stroke="#93a09a" stroke-width="2"/>
+      <text x="510" y="290" text-anchor="middle" font-size="22" fill="#2a3230" font-weight="700">HALLE</text>
+      <rect x="134" y="302" width="111" height="150" fill="${hl("halle")}" fill-opacity=".18" stroke="#93a09a" stroke-width="2"/>
+      <line x1="200" y1="355" x2="200" y2="418" stroke="${hl("halle")}" stroke-width="4"/><line x1="200" y1="418" x2="243" y2="420" stroke="${hl("halle")}" stroke-width="4"/>
+      <text x="186" y="386" transform="rotate(-90 186 386)" text-anchor="middle" font-size="13" font-weight="700" fill="${hl("halle")}">Theke</text>
+      ${box(76,114,64,108,"container","Container")}
+      ${plain(321,121,55,37,"GA1")}${plain(388,121,55,37,"GA2")}
+      ${box(451,121,55,37,"ga3","GA3")}${box(513,121,55,37,"ga4","GA4")}
+      ${box(576,118,26,44,"technik","Technik",true)}
+      ${box(611,121,55,37,"ga5","GA5")}${plain(673,121,55,37,"GA6")}
+      ${box(355,372,40,40,"l1","L1")}
+      ${box(633,394,97,32,"getraenke","Getränkeraum")}
+    </svg>`;
+  }
+
+  function render(){
+    const done=count(ALL), total=ALL.length;
+    $("#bar").style.width=(total?done/total*100:0)+"%";
+    $("#sub").textContent=(loaded?`${done} von ${total} erledigt`:"Lade…")+(startedAt?` · Heimspiel vom ${fmtD(startedAt)}`:"");
+    const tabs=[...SECTIONS,{id:"plan",title:"🗺 Hallenplan",tasks:[]}];
+    $("#nav").innerHTML=tabs.map(s=>`<button data-tab="${s.id}" class="${tab===s.id?"on":""}">${esc(s.title)}${s.tasks.length?`<span class="n">${count(s.tasks)}/${s.tasks.length}</span>`:""}</button>`).join("");
+    const sec=SECTIONS.find(s=>s.id===tab);
+    // Farbfilter nur bei Aufbau/Abbau
+    const chips=$("#chips");
+    if (sec && sec.grouped){
+      const used=[...new Set(sec.tasks.map(t=>t.loc))];
+      chips.style.display="";
+      chips.innerHTML=`<button data-loc="" class="${!locFilter?"on":""}">Alle Orte</button>`+used.map(l=>`<button data-loc="${l}" class="${locFilter===l?"on":""}"><span class="dot" style="background:${LOCS[l].color}"></span>${esc(LOCS[l].name)}</button>`).join("");
+    } else { chips.style.display="none"; chips.innerHTML=""; }
+
+    let html="";
+    if (tab==="plan"){
+      html+=`<h2>Wo ist was?</h2><div class="plan">${planSvg()}</div><div class="legend">`+
+        Object.values(LOCS).map(L=>`<div><span class="dot" style="background:${L.color}"></span><div><b>${esc(L.name)}</b><br><span style="color:var(--muted)">${esc(L.where)}</span></div></div>`).join("")+`</div>`;
+    } else if (sec){
+      const c=count(sec.tasks), n=sec.tasks.length;
+      html+=`<h2>${esc(sec.title)}${n?`<span class="cnt ${c===n?"done":""}">${c===n?"✓ fertig":c+" / "+n}</span>`:""}</h2>`;
+      (sec.info||[]).forEach(i=>html+=`<div class="info">${esc(i)}</div>`);
+      html+= sec.grouped ? groupedHtml(sec) : sortDone(sec.tasks).map(taskHtml).join("");
+      if (n && c===n) html+=`<div class="done-all">🎉 ${esc(sec.title)} erledigt – danke!</div>`;
+    }
+    html+=`<div class="footer">
+      <div class="note">Fehlt etwas? Wurde etwas aufgebraucht? <b>Bitte eine Nachricht an Alex!</b></div>
+      <div class="note"><b>WICHTIG:</b> Der Getränke-Raum ist stets ordentlich zu hinterlassen! Bei Nichteinhaltung der Schichten, nicht ordnungsgemäßem Hinterlassen des Getränke-Raumes oder anderen Versäumnissen behält sich die Abteilungsleitung eine Strafe von 50 € vor – direkt als Spende an die Jugendkasse.</div>
+    </div>
+    <button class="btn ghost reset" id="resetBtn">↺ Neues Heimspiel – Liste zurücksetzen</button>`;
+    $("#main").innerHTML=html;
+  }
+
+  $("#main").addEventListener("click", e=>{
+    if (e.target.closest("#resetBtn")) return $("#dReset").showModal();
+    const t=e.target.closest(".task"); if (t) toggle(t.dataset.id);
+  });
+  $("#nav").addEventListener("click", e=>{ const b=e.target.closest("button"); if(!b) return; tab=b.dataset.tab; ls.set("hs-tab",tab); render(); window.scrollTo({top:0}); });
+  $("#chips").addEventListener("click", e=>{ const b=e.target.closest("button"); if(!b) return; locFilter=b.dataset.loc; ls.set("hs-loc",locFilter); render(); window.scrollTo({top:0}); });
+  $("#rNo").onclick=()=>$("#dReset").close();
+  $("#rYes").onclick=async()=>{ $("#dReset").close();
+    try { await api("/reset",{}); checked={}; toast("Liste zurückgesetzt"); await refresh(); }
+    catch(e){ if(e.code!=="pin") toast("Zurücksetzen fehlgeschlagen"); } };
+
+  function askPin(){ const d=$("#dPin"); if(!d.open){ $("#fPin").reset(); d.showModal(); } }
+  $("#fPin").addEventListener("submit", e=>{ e.preventDefault(); PIN=e.target.pin.value.trim(); ls.set("hs-pin",PIN); $("#dPin").close(); refresh(); });
+  $("#dPin").addEventListener("cancel", e=>e.preventDefault());
+
+  if (!SECTIONS.some(s=>s.id===tab) && tab!=="plan") tab="aufbau";
+  if (locFilter && !LOCS[locFilter]) locFilter="";
+  render(); refresh();
+  setInterval(()=>{ if(!document.hidden && !document.querySelector("dialog[open]")) refresh(); }, 5000);
+  document.addEventListener("visibilitychange", ()=>{ if(!document.hidden) refresh(); });
+  if ("serviceWorker" in navigator) navigator.serviceWorker.register("/sw.js").catch(()=>{});
+})();
+</script>
 </body>
 </html>
