@@ -1,6 +1,6 @@
 {
-  "name": "Heimspieltag Checkliste",
-  "short_name": "Heimspieltag",
+  "name": "Hallen-Inventur",
+  "short_name": "Inventur",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0f1311",
